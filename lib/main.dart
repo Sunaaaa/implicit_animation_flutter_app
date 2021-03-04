@@ -1,37 +1,72 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+
+const _duration = Duration(milliseconds: 400);
 
 void main() {
   runApp(MyApp());
 }
 
-const ompang_url = "https://item.kakaocdn.net/do/8ae65d2dc85026b9157bf3a5a8c87ab8f43ad912ad8dd55b04db6a64cddaf76d";
-
-class FadeInDemo extends StatefulWidget {
-  _FadeInDemo createState() => _FadeInDemo();
+double randomBorderRadius() {
+  return Random().nextDouble() * 64;
 }
 
-class _FadeInDemo extends State<FadeInDemo> {
-  double _opacity = 0.0;
+double randomMargin() {
+  return Random().nextDouble() * 64;
+}
+
+Color randomColor() {
+  return Color(0xFFFFFFFF & Random().nextInt(0xFFFFFFFF));
+}
+class AnimatedContainerDemo extends StatefulWidget {
+  _AnimatedContainerDemo createState() => _AnimatedContainerDemo();
+}
+
+class _AnimatedContainerDemo extends State<AnimatedContainerDemo> {
+
+  Color _color ;
+  double _borderRadius;
+  double _margin;
+  @override
+  void initState() {
+    _color = randomColor();
+    _borderRadius = randomBorderRadius();
+    _margin = randomMargin();
+  }
+
+  void change() {
+    setState((){
+      _color = randomColor();
+      _borderRadius = randomBorderRadius();
+      _margin = randomMargin();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(padding: const EdgeInsets.all(10)),
-        Image.network(ompang_url),
-        TextButton(onPressed: () => setState(()=>_opacity = 1), child: Text("Show Details", style: TextStyle(color: Colors.lightGreen[600])),),
-        AnimatedOpacity (
-          duration: Duration(seconds: 3),
-          opacity: _opacity,
-          child: Column(
-            children: [
-              Text("Hi~"),
-              Text("My name is OMPANGI"),
-              Text("Nice to meet U :) "),
-            ],
-          ),
-        )
-      ],
+    return Scaffold(
+      appBar: AppBar(title: Text("Implicit Animations"), backgroundColor: Colors.lightGreen,),
+      body: Center(
+        child: Column(
+          children: [
+            SizedBox(
+              width: 128,
+              height: 128,
+              child: AnimatedContainer(
+                margin: EdgeInsets.all(_margin),
+                decoration: BoxDecoration(
+                  color: _color,
+                  borderRadius: BorderRadius.circular(_borderRadius)
+                ),
+                duration: _duration,
+                curve: Curves.easeInOutBack,
+              ),
+            ),
+            ElevatedButton(onPressed: () => change(), child: Text("Change"))
+          ],
+        ),
+      ),
     );
   }
 }
@@ -41,15 +76,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.amber,
-          title: Text("Implicit Animations"),
-        ),
-        body: Center(
-          child: FadeInDemo(),
-        ),
-      ),
+      home: AnimatedContainerDemo(),
     );
   }
 }
